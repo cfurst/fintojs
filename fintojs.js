@@ -5,21 +5,19 @@
 // var finto = require("./lib/fintoLib"),
 var http = require('http'),
 util = require('util'),
+config = require('./lib/config'),
 queryparser = require('querystring'),
 server = http.createServer(function(req,res) {
     
     console.log("connection detected..."); 
-   console.log("Method: " + req.method + "\n\nHeaders: " + req.rawHeaders + "\n\n");
+   console.log("Method: " + req.method + "\n\nHeaders: " + req.rawHeaders + "\n\n" + "url: " + req.url);
    console.log(util.inspect(queryparser.parse(req.url), {depth:null}));
+   res.end();
    
 }).on('error', function(err) {
     console.error(err);
 }),
-defaultSetup = {
-                host: '169.254.169.254',
-                port: 80,
-                exclusive: true
-};
+defaultSetup = config.serverSettings;
 
 
 server.listen(defaultSetup, function() {
