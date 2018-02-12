@@ -4,9 +4,9 @@
 
 var StsLib = require('../lib/StsLib'),
 
-stsLib = new StsLib('mlb-cms');
+stsLib = new StsLib();
 
-stsLib.getCreds(function(err,creds) {
+stsLib.getCreds('mlb-cms',function(err,creds) {
     if (err) {
         console.error(err);
     } else {
