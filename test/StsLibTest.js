@@ -14,3 +14,12 @@ stsLib.getCreds('mlb-cms',function(err,creds) {
     }
     
 });
+
+stsLib.getSessionName('mlb-cms', function(err, sessionName){
+    
+    if (err) {
+        console.error(err);
+    } else {
+        console.log("got session name: " + sessionName);
+    }
+})
