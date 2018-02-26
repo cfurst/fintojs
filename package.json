@@ -1,6 +1,6 @@
 {
   "name": "fintojs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Fintojs is based upon finto (https://github.com/threadwaste/finto) written by Tony M. It is basically an sts service interface to resolve multiple iam roles for aws. Please read more documentation here: https://github.com/threadwaste/finto/blob/master/README.md",
   "main": "finto.js",
   "scripts": {
