@@ -11,14 +11,15 @@
 
 // var finto = require("./lib/fintoLib"),
 'use strict';
-var http = require('http'),
-util = require('util'),
-config = require('./lib/config'),
-iamArnLib = require('./lib/IamArnLib'),
-StsLib = require('./lib/StsLib'),
-stsLibInst = new StsLib(),
-activeRole = '',
-ActionLib = require('./lib/ActionLib'),
+var http            = require('http'),
+util                = require('util'),
+config              = require('./lib/config'),
+iamArnLib           = require('./lib/IamArnLib'),
+StsLib              = require('./lib/StsLib'),
+stsLibInst          = new StsLib(),
+activeRole          = config.defaultRoleKey,
+ActionLib           = require('./lib/ActionLib'),
+postData            = '',
 
 /**
  * Main server set up - basic workflow defined here  with getAction as the main controller method
@@ -28,7 +29,11 @@ server = http.createServer(function(req,res) {
     var errorJson;
     console.log("[" + new Date() + "] " + req.url);
   
-    try {
+   
+        req.on('data', function(post) {
+            postData = post;
+        }).on('end', function() {
+        try {
         getAction(req, function(err, response) {
             if (err) {
                 
@@ -39,18 +44,15 @@ server = http.createServer(function(req,res) {
             res.end();
             
         });
-      
-       
-   } catch(e) {
-       console.log(e);
-       errorJson = JSON.stringify({error: "Action not found.", message: e.toString()})
-       res.writeHead(404, {"Content-Type": 'application/json', "Content-Length": errorJson.length});
-       res.write(errorJson);
-       res.end();
-   }
-   // console.log("<====== calling end");
-   
-   
+      //TODO: better error handling!    
+        } catch(e) {
+                console.log(e);
+                errorJson = JSON.stringify({error: "error encountered!", message: e.toString()})
+                res.writeHead(500, {"Content-Type": 'application/json', "Content-Length": errorJson.length});
+                res.write(errorJson);
+                res.end();
+        }
+        });
 }).on('error', function(err) {
     
     console.log(err);
@@ -63,39 +65,66 @@ server.listen(config.serverSettings, function() {
    
 } );
 
-//TODO: maybe split this out into a server controller?
+//TODO: maybe split this out into a server controller class? Yeah definitely!
 /**
  * main controller method
+ * TODO: make actionlib the actual controller class.
  */
 function getAction(req, callback) {
     var parts = [],
     getString,
     getParts,
     action = '',
+    roleReqObj = {},
+    roleE,
     acct;
    // console.log("<===== called getaction");
     //TODO: make scalable.
+    req.url = req.url.replace(/\/+/, '/');
     parts = req.url.split('/');
     parts.shift(); //gets rid of the root which has nothing.
     console.log(parts);
+    if (req.method === "PUT") {
+        try {
+            roleReqObj = JSON.parse(postData);
+            activeRole = roleReqObj.alias;
+            callback(null, JSON.stringify({ active_role: activeRole }, null, ' '));
+            
+        } catch(roleE) {
+            console.log("caught error...");
+            callback(roleE);
+            
+        }
+        return;
+    } 
     if (/roles/.test(req.url)) {
         console.log("<==== roles test positive in url")
         action = parts[0];
         switch (parts.length) {
             case 2:
                 console.log("parts length: " + parts.length);
-                action = 'arn'
-                acct = parts[1]; //arn request for acct
+                action  = 'arn'
+                acct    = parts[1]; //arn request for acct
                 break;
             case 3:
-                acct = parts[1];
-                action = parts[2]; //credentials action for acct
-                
-               
+                acct    = parts[1];
+                action  = parts[2]; //credentials action for acct
+             
         }
     }
+    // this needs to be split up to it's own action.. because we are supposed to return the active alias or credentials depending on whether or not there is an alias in the url.
     else if (/security-credentials/.test(req.url)) {
-        action = 'credentials'
+       switch(parts.length) {
+           case 4: 
+               action   = parts[parts.length-1]; //should be security-credentials
+               break;
+           case 5: 
+               action   = parts[parts.length-2]; //should be security-credentials
+               acct     = parts[parts.length-1]; //should be role key
+               break;
+           default:
+               callback("bad security-credentials request!");
+       }
     }
     if (/\?/.test(action)) {
         action = (action.split('?'))[0];
@@ -122,7 +151,21 @@ function getAction(req, callback) {
             });
             break;
         };
+        case "security-credentials":
+           if (!acct) {
+               callback(null, activeRole);
+               break;
+           }
+            
         case "credentials": {
+            stsLibInst.getCreds(acct,function(err, creds) {
+                if (err) {
+                    callback(err);
+                } else {
+                    callback(null, creds);
+                }
+                
+            });
             break;
             
         }
