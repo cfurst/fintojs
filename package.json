@@ -11,5 +11,6 @@
   	"aws-sdk": "2.*"
   },
   "author": "Carl Yamamoto-Furst",
-  "license": "ISC"
+  "license": "MIT",
+  "homepage": "https://github.com/cfurst/fintojs"
 }

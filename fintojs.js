@@ -68,7 +68,8 @@ server.listen(config.serverSettings, function() {
 //TODO: maybe split this out into a server controller class? Yeah definitely!
 /**
  * main controller method
- * TODO: make actionlib the actual controller class.
+ * TODO: make actionlib the actual controller class. and add this as a contoller gateway..
+ * 
  */
 function getAction(req, callback) {
     var parts = [],
@@ -77,6 +78,7 @@ function getAction(req, callback) {
     action = '',
     roleReqObj = {},
     roleE,
+    arnLib = new iamArnLib(),
     acct;
    // console.log("<===== called getaction");
     //TODO: make scalable.
@@ -88,6 +90,8 @@ function getAction(req, callback) {
         try {
             roleReqObj = JSON.parse(postData);
             activeRole = roleReqObj.alias;
+            if (! arnLib.getArn(activeRole))
+                callback(null, "Role not found!");
             callback(null, JSON.stringify({ active_role: activeRole }, null, ' '));
             
         } catch(roleE) {
