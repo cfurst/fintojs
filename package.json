@@ -8,7 +8,8 @@
   },
   "dependencies": {
   	"envious": "0.2.*",
-  	"aws-sdk": "2.*"
+  	"aws-sdk": "2.*",
+  	"node-getopt": "0.*"
   },
   "author": "Carl Yamamoto-Furst",
   "license": "MIT",
