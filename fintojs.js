@@ -85,7 +85,7 @@ function getAction(req, callback) {
     req.url = req.url.replace(/\/+/, '/');
     parts = req.url.split('/');
     parts.shift(); //gets rid of the root which has nothing.
-    console.log(parts);
+  //  console.log(parts);
     if (req.method === "PUT") {
         try {
             roleReqObj = JSON.parse(postData);
@@ -95,18 +95,18 @@ function getAction(req, callback) {
             callback(null, JSON.stringify({ active_role: activeRole }, null, ' '));
             
         } catch(roleE) {
-            console.log("caught error...");
+    //        console.log("caught error...");
             callback(roleE);
             
         }
         return;
     } 
     if (/roles/.test(req.url)) {
-        console.log("<==== roles test positive in url")
+      //  console.log("<==== roles test positive in url")
         action = parts[0];
         switch (parts.length) {
             case 2:
-                console.log("parts length: " + parts.length);
+        //        console.log("parts length: " + parts.length);
                 action  = 'arn'
                 acct    = parts[1]; //arn request for acct
                 break;
@@ -133,12 +133,12 @@ function getAction(req, callback) {
     if (/\?/.test(action)) {
         action = (action.split('?'))[0];
     }
-    console.log("action: " + action);
+    //console.log("action: " + action);
     
     // Heavy lifting of action handling. TODO: break this out into a controller.
     switch(action) {
         case "roles": {
-            console.log("<===== found roles action ");
+      //      console.log("<===== found roles action ");
             
             callback(null, ActionLib.getRoles(req, activeRole));
             break;
@@ -149,7 +149,7 @@ function getAction(req, callback) {
                 if (err) {
                     callback(err)
                 } else {
-                    console.log("<===== arn json: " + arnJson);
+        //            console.log("<===== arn json: " + arnJson);
                     callback(null, arnJson);
                 }
             });

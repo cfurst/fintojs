@@ -6,14 +6,21 @@ please see the above link for docs and information on how to use.
 
 This has not been published to npm yet (may not be...)
 
-So clone or download and then just set up the network alias as descirbed in the docs linked above (I have only tested with `ifconfig lo0 alias..` not sure about the other stuff)
+So clone or download and then just set up the network alias as described in the docs linked above (I have only tested with `ifconfig lo0 alias..` not sure about the other stuff)
 
-also this version is missing the command line options so it defaults to listen on 196.254.196.254 and only defaults are available (like $HOME/.fintorc for example.. sorry)
+We have some support for the command line options. `-a --addr`, `-p --port`, and `-c --config` are implemented. `-l --log` is not see the synopsis if you need to write to a file (unix only).
 
-First draft so please report issues.
+We have not tested this on Windows or Cygwin.
+
+This is currently BETA. Please report any issues.
 
 ### SYNOPSIS
 ```bash
-$sudo node fintojs.js
+## with a log
+$ sudo node fintojs.js > /path/to/log/file 2>&1
+## without a log
+$ sudo node fintojs.js
+## without sudo you would need to customize at least the port:
+$ node fintojs.js -p 8080
 ```
-This should work with all the helpers, but I haven't tested them all so report issues as you see them we'll try and reproduce. I also may have missed features. Please report those also.
+This should work with all the helpers. Please report any issues or mising features (except the logging, of course).
