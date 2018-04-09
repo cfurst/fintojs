@@ -20,7 +20,6 @@ stsLibInst          = new StsLib(),
 activeRole          = config.defaultRoleKey,
 ActionLib           = require('./lib/ActionLib'),
 postData            = '',
-
 /**
  * Main server set up - basic workflow defined here  with getAction as the main controller method
  * TODO: make an actual controller class or get a frame work to help me do so.
@@ -32,6 +31,7 @@ server = http.createServer(function(req,res) {
    
         req.on('data', function(post) {
             postData = post;
+            // console.log("got post data: " + postData);
         }).on('end', function() {
         try {
         getAction(req, function(err, response) {
@@ -46,17 +46,33 @@ server = http.createServer(function(req,res) {
         });
       //TODO: better error handling!    
         } catch(e) {
-                console.log(e);
-                errorJson = JSON.stringify({error: "error encountered!", message: e.toString()})
-                res.writeHead(500, {"Content-Type": 'application/json', "Content-Length": errorJson.length});
-                res.write(errorJson);
-                res.end();
+                writeError(e);
         }
+        }).on('error', function(err) {
+                writeError(err);
         });
+        
+        //TODO: refactor this to be used in the controller.
+        function writeError (err) {
+            console.log(err);
+            errorJson = JSON.stringify({error: "error encountered!", message: err.toString()})
+            res.writeHead(500, {"Content-Type": 'application/json', "Content-Length": errorJson.length});
+            res.write(errorJson);
+            res.end();
+        }
 }).on('error', function(err) {
-    
-    console.log(err);
+    console.log("Internal Server Error: "+ err);
 });
+
+process.on('uncaughtException', function(err) {
+    server.emit('error', err);
+    
+});
+
+process.on('exit', function(code){
+    console.error("===========   exit called!!! Code: " + code +" ===============")
+    
+})
 
 server.listen(config.serverSettings, function() {
  
@@ -90,9 +106,11 @@ function getAction(req, callback) {
         try {
             roleReqObj = JSON.parse(postData);
             activeRole = roleReqObj.alias;
-            if (! arnLib.getArn(activeRole))
-                callback(null, "Role not found!");
-            callback(null, JSON.stringify({ active_role: activeRole }, null, ' '));
+            if (! arnLib.getArn(activeRole)) {
+                callback(activeRole + " role not found!");
+            } else {
+                callback(null, JSON.stringify({ active_role: activeRole }, null, ' '));
+            }
             
         } catch(roleE) {
     //        console.log("caught error...");
