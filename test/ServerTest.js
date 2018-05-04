@@ -3,9 +3,10 @@
  */
 'use strict';
 var http    = require('http'),
-async        = require('async'),
-hostname="169.254.169.254",
-roleAlias = process.argv[2],
+async       = require('async'),
+hostname    ="169.254.169.254",
+config      = require('../lib/config'),
+roleAlias   = process.argv[2], || config.defaultRoleKey,
 httpOptions = {
                 hostname: hostname,
                 timeout: 60000
@@ -91,6 +92,20 @@ async.parallel({
             })
         })
         
+    },
+    'secuirty-credentials-initial-call': function(callback) {
+        httpOptions.path = "/latest/meta-data/iam/security-credentials";
+        httpOptions.method = "GET";
+        http.get(httpOptions, function(resp) {
+            getData(resp, function(respRole) {
+                if (respRole === "") {
+                    callback(null, false);
+                }
+                else if (respRole === roleAlias){
+                    callback(null, false)
+                }
+            })
+        })
     }
 },
         function(err, results) {
