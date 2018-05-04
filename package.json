@@ -4,8 +4,7 @@
   "description": "Fintojs is based upon finto (https://github.com/threadwaste/finto) written by Tony M. It is basically an sts service interface to resolve multiple iam roles for aws. Please read more documentation here: https://github.com/threadwaste/finto/blob/master/README.md",
   "main": "finto.js",
   "scripts": {
-    "test": "echo 'Error: no test specified' && exit 1",
-    "start" : "sudo node fintojs.js"
+    "test": "node test/ServerTest.js"
   },
   "dependencies": {
   	"envious": "0.2.*",
@@ -15,5 +14,9 @@
   },
   "author": "Carl Yamamoto-Furst",
   "license": "MIT",
-  "homepage": "https://github.com/cfurst/fintojs"
+  "homepage": "https://github.com/cfurst/fintojs",
+  "repository" :
+  { "type" : "git",
+   "url" : "https://github.com/cfurst/fintojs.git"
+  }
 }
