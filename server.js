@@ -14,54 +14,50 @@
 var http            = require('http'),
 util                = require('util'),
 config              = require('./lib/config'),
-iamArnLib           = require('./lib/IamArnLib'),
-StsLib              = require('./lib/StsLib'),
-stsLibInst          = new StsLib(),
 activeRole          = config.defaultRoleKey,
 ActionLib           = require('./lib/ActionLib'),
-postData            = '',
+controller          = new ActionLib(),
+
 /**
  * Main server set up - basic workflow defined here  with getAction as the main controller method
  * TODO: make an actual controller class or get a frame work to help me do so.
  */
 server = http.createServer(function(req,res) {
-    var errorJson;
+    var
+    
+    postData = '';    
     console.log("[" + new Date() + "] " + req.url);
   
    
         req.on('data', function(post) {
-            postData = post;
+            postData += post;
             // console.log("got post data: " + postData);
         }).on('end', function() {
-        try {
-        getAction(req, function(err, response) {
-            if (err) {
-                
-                throw(err);
+            controller.setRequest(req);
+            controller.setPostData(postData);
+            try {
+                controller.process(function(err, response) {
+                    if (err) {
+                        
+                        throw(err);
+                    }
+                    res.writeHead(200, {"Content-Type": 'application/json', "Content-length": response.length});
+                    res.write(response);
+                    res.end();
+                    });
+              
+            } catch(e) {
+                controller.writeError(e, res);
             }
-            res.writeHead(200, {"Content-Type": 'application/json', "Content-length": response.length});
-            res.write(response);
-            res.end();
-            
-        });
-      //TODO: better error handling!    
-        } catch(e) {
-                writeError(e);
-        }
         }).on('error', function(err) {
-                writeError(err);
+            controller.writeError(err, res);
         });
         
         //TODO: refactor this to be used in the controller.
-        function writeError (err) {
-            console.log(err);
-            errorJson = JSON.stringify({error: "error encountered!", message: err.toString()})
-            res.writeHead(500, {"Content-Type": 'application/json', "Content-Length": errorJson.length});
-            res.write(errorJson);
-            res.end();
-        }
+        
 }).on('error', function(err) {
     console.log("Internal Server Error: "+ err);
+    console.error(err);
 });
 
 process.on('uncaughtException', function(err) {
@@ -81,12 +77,8 @@ server.listen(config.serverSettings, function() {
    
 } );
 
-//TODO: maybe split this out into a server controller class? Yeah definitely!
-/**
- * main controller method
- * TODO: make actionlib the actual controller class. and add this as a contoller gateway..
- * 
- */
+
+/******************** NO LONGER NEEDED *********************
 function getAction(req, callback) {
     var parts = [],
     getString,
@@ -103,6 +95,9 @@ function getAction(req, callback) {
     parts.shift(); //gets rid of the root which has nothing.
   //  console.log(parts);
     if (req.method === "PUT") {
+        
+         //also for /roles -> PUT
+         
         try {
             roleReqObj = JSON.parse(postData);
             activeRole = roleReqObj.alias;
@@ -120,6 +115,10 @@ function getAction(req, callback) {
         return;
     } 
     if (/roles/.test(req.url)) {
+       //  /roles -> GET
+       // /roles/specificRole
+       // /roles/specificRole/credentials
+       // /roles?status=active <-- not implemented!
       //  console.log("<==== roles test positive in url")
         action = parts[0];
         switch (parts.length) {
@@ -136,6 +135,7 @@ function getAction(req, callback) {
     }
     // this needs to be split up to it's own action.. because we are supposed to return the active alias or credentials depending on whether or not there is an alias in the url.
     else if (/security-credentials/.test(req.url)) {
+        
        switch(parts.length) {
            case 4: 
                action   = parts[parts.length-1]; //should be security-credentials
@@ -197,4 +197,6 @@ function getAction(req, callback) {
             
     }
     
+    
 }
+********************************/
