@@ -6,7 +6,7 @@ var http    = require('http'),
 async       = require('async'),
 hostname    ="169.254.169.254",
 config      = require('../lib/config'),
-roleAlias   = process.argv[2], || config.defaultRoleKey,
+roleAlias   = process.argv[2] || config.defaultRoleKey,
 httpOptions = {
                 hostname: hostname,
                 timeout: 60000
@@ -85,7 +85,7 @@ async.parallel({
                             callback(null, false);
                         }
                     } catch(activeError) {
-                        console.error(activeError)
+                        
                         callback("Error executing finto-active: " + activeError);
                     }
                 }
@@ -93,19 +93,56 @@ async.parallel({
         })
         
     },
-    'secuirty-credentials-initial-call': function(callback) {
-        httpOptions.path = "/latest/meta-data/iam/security-credentials";
-        httpOptions.method = "GET";
-        http.get(httpOptions, function(resp) {
-            getData(resp, function(respRole) {
-                if (respRole === "") {
-                    callback(null, false);
-                }
-                else if (respRole === roleAlias){
-                    callback(null, false)
-                }
+    'secuirty-credentials': function(callback) {
+        
+        new Promise(function(resolve,reject) {
+        
+        
+            httpOptions.path = "/latest/meta-data/iam/security-credentials";
+            httpOptions.method = "GET";
+            var respJson = {};
+            http.get(httpOptions, function(resp) {
+                getData(resp, function(respRole) {
+                    if (respRole === "") {
+                        // console.log("got blank calling reject")
+                        reject(false);
+                    }
+                    else if (respRole === roleAlias){
+                        // console.log("resolving...")
+                        resolve(respRole);
+                    } else {
+                        // console.log("couldn't resolve.. calling reject")
+                       reject(false);
+                            } 
+                })
             })
-        })
+        }).then(function(result) {
+                httpOptions.path = "/latest/meta-data/iam/security-credentials/" + result;
+                httpOptions.method = "GET";
+                http.get(httpOptions, function(resp) {
+                    getData(resp, function(credData){
+                        var credJson;
+                        try {
+                            credJson = JSON.parse(credData);
+                        
+                            if (credJson.Code === "Success") {
+                           //     console.log("cred data was success...")
+                                callback(null, true);
+                            } else {
+                             //   console.log("credata was not success...")
+                                callback(null, false);
+                            }
+                        } catch(jsonE) {
+                            callback(null, false);
+                        }
+                    })
+                })
+                
+                },
+                function(result) {
+                    callback(null,result); //should be false.
+                
+                })
     }
 },
         function(err, results) {
