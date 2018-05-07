@@ -16,6 +16,7 @@ httpOptions = {
 
 async.parallel({
     'finto-ls': function(callback) {
+        console.log("doing finto-ls..")
         httpOptions.path = "/roles";
         httpOptions.method= "GET";
             http.get(httpOptions, function(resp) {
@@ -38,6 +39,7 @@ async.parallel({
             })
     },
     'finto-set': function(callback) {
+            console.log("doing finto-set..")
             httpOptions.path = "/roles";
             httpOptions.method = "PUT";
             var req = http.request(httpOptions);
@@ -66,6 +68,7 @@ async.parallel({
             
     },
     'finto-active': function(callback) {
+        console.log("doing finto-active..")
         httpOptions.path = "/roles?status=active";
         httpOptions.method = "GET";
                        
@@ -97,8 +100,8 @@ async.parallel({
         
         new Promise(function(resolve,reject) {
         
-        
-            httpOptions.path = "/latest/meta-data/iam/security-credentials";
+            console.log("doing security-credentials..")
+            httpOptions.path = "/latest/meta-data/iam/security-credentials/";
             httpOptions.method = "GET";
             var respJson = {};
             http.get(httpOptions, function(resp) {
@@ -108,15 +111,17 @@ async.parallel({
                         reject(false);
                     }
                     else if (respRole === roleAlias){
-                        // console.log("resolving...")
+                       //  console.log("resolving...respRole:" + respRole + " roleAlias: " + roleAlias);
                         resolve(respRole);
                     } else {
-                        // console.log("couldn't resolve.. calling reject")
+                       // console.log("couldn't resolve.. calling reject")
                        reject(false);
                             } 
                 })
             })
         }).then(function(result) {
+                console.log("doing security-credentials/" + result)
+                // console.log("what is the result from the first call? " + result);
                 httpOptions.path = "/latest/meta-data/iam/security-credentials/" + result;
                 httpOptions.method = "GET";
                 http.get(httpOptions, function(resp) {
@@ -124,12 +129,12 @@ async.parallel({
                         var credJson;
                         try {
                             credJson = JSON.parse(credData);
-                        
+                            // console.log("credJson: " + JSON.stringify(credJson));
                             if (credJson.Code === "Success") {
-                           //     console.log("cred data was success...")
+                               // console.log("cred data was success...")
                                 callback(null, true);
                             } else {
-                             //   console.log("credata was not success...")
+                             // console.log("credata was not success...")
                                 callback(null, false);
                             }
                         } catch(jsonE) {
@@ -140,6 +145,7 @@ async.parallel({
                 
                 },
                 function(result) {
+                  //  console.log("reject function: " + result);
                     callback(null,result); //should be false.
                 
                 })
