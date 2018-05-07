@@ -33,9 +33,9 @@ We have a test script you can use to test your server (**on port 80 only!**) wit
 
 ```bash
 ## again in the fintojs directory you cloned...
-$ npm test [<federated-role-alias>]
+$ npm test [federated-role-alias]
 ```
-where the *<federated-role-alias>* is the configured key to a federated role ARN you have configured in your `.fintorc` file. This is optional. If you leave it out, it will use the default role configured in `.fintorc`
+where the *federated-role-alias* is the configured key to a federated role ARN you have configured in your `.fintorc` file. This is optional. If you leave it out, it will use the default role configured in `.fintorc`
  
 The report is not the greatest, you will be able to see which helpers passed or failed and then it will be your job to check logs, server output, etc to find out what's wrong. If an investigation concludes that you did everything right (or at least believe so..), and tests are still failing, open an issue ticket and describe how to reproduce the issue.
 
