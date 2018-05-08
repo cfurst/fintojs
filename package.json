@@ -4,7 +4,8 @@
   "description": "Fintojs is based upon finto (https://github.com/threadwaste/finto) written by Tony M. It is basically an sts service interface to resolve multiple iam roles for aws. Please read more documentation here: https://github.com/threadwaste/finto/blob/master/README.md",
   "main": "finto.js",
   "scripts": {
-    "test": "node test/ServerTest.js"
+    "test": "node test/ServerTest.js",
+    "install-fintorc": "node test/InstallFintorc.js"
   },
   "dependencies": {
   	"envious": "0.2.*",
