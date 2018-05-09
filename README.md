@@ -39,4 +39,13 @@ where the *federated-role-alias* is the configured key to a federated role ARN y
  
 The report is not the greatest, you will be able to see which helpers passed or failed and then it will be your job to check logs, server output, etc to find out what's wrong. If an investigation concludes that you did everything right (or at least believe so..), and tests are still failing, open an issue ticket and describe how to reproduce the issue.
 
+### Installing fintorc
+
+installing fintorc is basically done also through npm:
+
+```bash
+$ npm run-script install-fintorc team-name
+```
+
+where team-name is the team name you use to switch roles. You will have to have the default identity configured or at least have the fintojs server running.
 
