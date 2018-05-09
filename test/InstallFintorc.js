@@ -14,22 +14,89 @@ teamName            = process.argv[2];
 
 
 
-if (!teamName) {
-    console.error("No Teamname Provided!");
-    process.exit(127);
-}
+
 
 function setFileName(rcHash) {
-    console.log("calling set filename")
+    console.log("setting file name...")
+   if (rcHash && rcHash.credentials) {
+       let fileName = `${process.env.HOME}/.aws/credentials`;
+       rcHash.credentials.file = fileName;
+       return rcHash;
+   } else {
+       throw("Couldn't set filename: Malformed fintorc Hash...");
+   }
 }
 
-function writeFile(rcHash) {
-    console.log('calling writeFile');
+function writeFile (fintoRcHash) {
+    let fintorcFile = `${process.env.HOME}/.fintorc`;
+    console.log("attempting to write file..")
+    if (fintoRcHash) {
+        new Promise((resolve,reject) => {
+            fs.open(fintorcFile, fs.constants.O_WRONLY | fs.constants.O_CREAT | fs.constants.O_EXCL, 0o600,  (err,fd) => {
+                
+                
+                    if (err && err.code === 'EEXIST') {
+                        
+                        //throw (err);
+                        console.log("Found old copy of .fintorc.. backing up...")
+                        fs.rename(fintorcFile, `${fintorcFile}.old`, (err) => {
+                            if (err) {
+                                console.error(err); //can't rename file.. we're not continuing.
+                                process.exit(127);
+                            } else {
+                                reject(fintorcFile);
+                            }
+                        });
+                        
+                    } else {
+                        resolve(fd)
+                    }
+                })
+            }).then((fd) => {
+                console.log("writing out fintorc file")
+                fs.write(fd, JSON.stringify(fintoRcHash,null, " "), (err) => {
+                    if (err) {
+                        throw (err);
+                    } else {
+                        console.log(`.fintorc file written to ${fintorcFile}`)
+                    };
+                    
+                })},
+                (rejectFintoRcFileName) => {
+                    // not really an error ... but after the move we need to write out the file
+                    fs.open(rejectFintoRcFileName, fs.constants.O_WRONLY | fs.constants.O_CREAT | fs.constants.O_EXCL, 0o600,  (err,fd) => {
+                       if (err) {
+                           console.error(err); //can't open the file at this point.. we need to end.
+                           process.exit(127);
+                       } else {
+                           fs.write(fd, JSON.stringify(fintoRcHash,null, " "), (err) => {
+                               if (err) {
+                                   throw (err);
+                               } else {
+                                   console.log(`.fintorc file written to ${fintorcFile}`)
+                               };
+                       });
+                       }
+                }); 
+            }).catch((err) => {
+                    console.error(err);
+                    process.exit(127);
+                    
+                })
+    } else {
+        throw("no fintorc hash!");
+    }
+    
+    
 }
 
 function printError(err) {
     console.error(err);
     process.exit(127);
+}
+
+if (!teamName) {
+    printError("No Teamname provided!");
 }
 // get the all_accounts.json file
 S3.getObject(s3GetParams, (err,data) => {
