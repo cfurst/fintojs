@@ -65,8 +65,7 @@ function writeFile (fintoRcHash) {
                     // not really an error ... but after the move we need to write out the file
                     fs.open(rejectFintoRcFileName, fs.constants.O_WRONLY | fs.constants.O_CREAT | fs.constants.O_EXCL, 0o600,  (err,fd) => {
                        if (err) {
-                           console.error(err); //can't open the file at this point.. we need to end.
-                           process.exit(127);
+                           printError(err) //can't open the file.. we need to end.
                        } else {
                            fs.write(fd, JSON.stringify(fintoRcHash,null, " "), (err) => {
                                if (err) {
