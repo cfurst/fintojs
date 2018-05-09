@@ -41,8 +41,7 @@ function writeFile (fintoRcHash) {
                         console.log("Found old copy of .fintorc.. backing up...")
                         fs.rename(fintorcFile, `${fintorcFile}.old`, (err) => {
                             if (err) {
-                                console.error(err); //can't rename file.. we're not continuing.
-                                process.exit(127);
+                                printError(err); //can't move the old file.. abort.. abort..
                             } else {
                                 reject(fintorcFile);
                             }
@@ -79,12 +78,11 @@ function writeFile (fintoRcHash) {
                        }
                 }); 
             }).catch((err) => {
-                    console.error(err);
-                    process.exit(127);
+                    printError(err)
                     
                 })
     } else {
-        throw("no fintorc hash!");
+        printError("No fintorc hash to write!")
     }
     
     
