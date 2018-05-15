@@ -18,8 +18,13 @@ This is currently BETA. Please report any issues.
 ```bash
 ## first cd into the fintojs directory you cloned..
 $ cd /path/to/clone/of/fintojs
+## simple start - output to console:
+$ sudo npm start
 ## with a log
+$ sudo npm start > /path/to/log/file 2>&1
+## with a log - forking server to background
 $ sudo npm start > /path/to/log/file 2>&1 &
+## note: the above will start the server if you have already authenticated with a previous sudo command. If not, it will pause, waiting for your to enter your password. You might want to start this without the bg symbol '&', enter your password and then background it after the server has started.
 ## without a log
 $ sudo npm start
 ## without sudo you would need to customize at least the port:
