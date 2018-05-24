@@ -51,6 +51,11 @@ installing fintorc is basically done also through npm:
 ```bash
 $ npm run-script install-fintorc team-name
 ```
+where team-name is the team name you use to switch roles. You will have to have the default identity configured or at least have the fintojs server running with a current `.fintorc`.
 
-where team-name is the team name you use to switch roles. You will have to have the default identity configured or at least have the fintojs server running.
+If you don't have `.fintorc` and you changed your profile in `~/.aws/credentials` already, setup the `AWS_PROFILE` environment variable to `identity` like so
+
+```bash
+$ AWS_PROFILE=identity npm run-script install-fintorc team-name
+```
 
