@@ -4,8 +4,12 @@
 var AWS     = require('aws-sdk'),
 config      = require('../lib/config'),
 defaultRole = "bamazon-TeamCMS";
-AWS.Config.credentials = new AWS.SharedIniFileCredentials({profile: config.identityProfileDefault});
-AWS.config.credentials = new AWS.TemporaryCredentials({RoleArn: "arn:aws:iam::742465481554:role/bamazon-TeamCMS"}, AWS.Config.credentials) 
+new AWS.CredentialProviderChain(config.credentialProviders).resolve(function(err, creds) {
+if (err) throw err;
+AWS.Config.credentials = creds;
+})
+
+AWS.config.credentials = new AWS.TemporaryCredentials({RoleArn: "arn:aws:iam::742465481554:role/bamazon-TeamCMS"}, AWS.Config.credentials); 
 
 var iam     = new AWS.IAM(),
 sts         = new AWS.STS();
