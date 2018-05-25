@@ -33,4 +33,4 @@ setTimeout(function() {stsLib.getCreds('mlb', function(err, creds){
         console.log("got creds after an hour: " + creds);
     }
    }
-)},3600 * 1000);
+)},3600 * 1000 + 10); // 10 seconds after the hour
