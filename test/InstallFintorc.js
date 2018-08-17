@@ -130,6 +130,12 @@ S3.getObject(s3GetParams, (err,data) => {
                            resolve(fintorcHash)
                         }
                     });
+               }).then(function(fintorcHash) {
+                   if (Object.keys(fintorcHash.roles).length === 0) {
+                       throw(new Error("I couldn't find any roles!! Are you sure you typed in the right team name??"));
+                   } else {
+                       return fintorcHash;
+                   }
                }).then(setFileName).then(writeFile).catch(printError);
             //console.log("got json:");
             //console.log(JSON.stringify(allAccountsJson, null, " "));
