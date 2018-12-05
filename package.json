@@ -8,16 +8,16 @@
     "install-fintorc": "node test/InstallFintorc.js"
   },
   "dependencies": {
-  	"envious": "0.2.*",
-  	"aws-sdk": "2.*",
-  	"node-getopt": "0.*",
-  	"async"		: "2.6.*"
+    "envious": "0.2.*",
+    "aws-sdk": "2.68.*",
+    "node-getopt": "0.*",
+    "async": "2.6.*"
   },
   "author": "Carl Yamamoto-Furst",
   "license": "MIT",
   "homepage": "https://github.com/cfurst/fintojs",
-  "repository" :
-  { "type" : "git",
-   "url" : "https://github.com/cfurst/fintojs.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cfurst/fintojs.git"
   }
 }
