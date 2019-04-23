@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node test/ServerTest.js",
     "install-fintorc": "node test/InstallFintorc.js",
-    "start": "node server.js > $(if [ ! -z \"$FINTOJS_LOG_PATH\" ]; then \"$FINTOJS_LOGPATH\"; else echo \"/dev/null\"; fi)"
+    "start": "if [ ! -z \"$FINTOJS_LOG_PATH\" ]; then node server.js >> $FINTOJS_LOG_PATH; else node server.js; fi"
   },
   "dependencies": {
     "envious": "0.2.*",
