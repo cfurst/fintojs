@@ -20,17 +20,20 @@ This is currently BETA. Please report any issues.
 $ cd /path/to/clone/of/fintojs
 ## simple start - output to console:
 $ sudo npm start
-## with a log
-$ sudo npm start > /path/to/log/file 2>&1
+## with a log - all output will be appended to the logfile
+$ FINTOJS_LOG_PATH=/absolute/path/to/log-file sudo -E npm start
 ## with a log - forking server to background
-$ sudo npm start > /path/to/log/file 2>&1 &
-## note: the above will start the server if you have already authenticated with a previous sudo command. If not, it will pause, waiting for your to enter your password. You might want to start this without the bg symbol '&', enter your password and then background it after the server has started.
-## without a log
-$ sudo npm start
+$ FINTOJS_LOG_PATH=/absolute/path/to/log-file sudo -E npm start &
+## note on the above two examples: FINTOJS_LOG_PATH is an environment variable you can set through all the usual channels (export, .profile, .bash_profile etc) BUT
+## you MUST use the -E option with sudo to inherit your current environment
 ## without sudo you would need to customize at least the port:
 $ npm start -- -p 8080 # note the '--' it's necessary!
 ```
 This should work with all the helpers. Please report any issues or missing features (except the logging, of course).
+
+### LOGGING
+
+To log your server output it's best to set the `FINTOJS_LOG_PATH` environment variable. If you set this to the absolute path of your log file, you will have all output appended to that file and you can start your server in the background. This is achieved through shell redirection rather than using a logging library. If you are planing on starting your server with elevated privileges, you will need to have `sudo` inherit your environment which you can do with the `-E` option as noted in the SYNOPSIS section above. 
 
 ### TESTING
 

@@ -5,7 +5,8 @@
   "main": "finto.js",
   "scripts": {
     "test": "node test/ServerTest.js",
-    "install-fintorc": "node test/InstallFintorc.js"
+    "install-fintorc": "node test/InstallFintorc.js",
+    "start": "if [ ! -z \"$FINTOJS_LOG_PATH\" ]; then node server.js >> $FINTOJS_LOG_PATH; else node server.js; fi"
   },
   "dependencies": {
     "envious": "0.2.*",
