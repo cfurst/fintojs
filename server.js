@@ -36,31 +36,31 @@ var http = require('http'),
             controller.setRequest(req);
             controller.setPostData(postData);
 
-            console.log("==== calling process ===");
+            ///console.log("==== calling process ===");
             controller.process(function(err, response) {
                 if (err) {
-                    console.log("==== got process error ======");
+                    /// console.log("==== got process error ======");
                     controller.writeError(err, res);
-
-                    throw (err);
+                } else {
+                    res.writeHead(200, { "Content-Type": 'application/json', "Content-length": response.length });
+                    res.write(response);
+                    res.end();
                 }
-                res.writeHead(200, { "Content-Type": 'application/json', "Content-length": response.length });
-                res.write(response);
-                res.end();
-                console.log("=== ended process callback ==== ");
+                // console.log("=== ended process callback ==== ");
             });
 
 
-            console.log("==== ended request end event ==== ")
+            //console.log("==== ended request end event ==== ")
         }).on('error', function(err) {
             controller.writeError(err, res);
+
         });
 
         //TODO: refactor this to be used in the controller.
 
     }).on('error', function(err) {
-        console.log("Internal Server Error: " + err);
-        console.log("==== here =====")
+        console.log("Internal Server Error: ");
+        //console.log("==== here =====")
         console.log(err);
 
     });
