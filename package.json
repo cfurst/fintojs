@@ -1,24 +1,26 @@
 {
-  "name": "fintojs",
-  "version": "0.4.0",
-  "description": "Fintojs is based upon finto (https://github.com/threadwaste/finto) written by Tony M. It is basically an sts service interface to resolve multiple iam roles for aws. Please read more documentation here: https://github.com/threadwaste/finto/blob/master/README.md",
-  "main": "finto.js",
-  "scripts": {
-    "test": "node test/ServerTest.js",
-    "install-fintorc": "node test/InstallFintorc.js",
-    "start": "if [ ! -z \"$FINTOJS_LOG_PATH\" ]; then node server.js >> $FINTOJS_LOG_PATH; else node server.js; fi"
-  },
-  "dependencies": {
-    "envious": "0.2.*",
-    "aws-sdk": "2.68.*",
-    "node-getopt": "0.*",
-    "async": "2.6.*"
-  },
-  "author": "Carl Yamamoto-Furst",
-  "license": "MIT",
-  "homepage": "https://github.com/cfurst/fintojs",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cfurst/fintojs.git"
-  }
+    "name": "fintojs",
+    "version": "0.4.0",
+    "description": "Fintojs is based upon finto (https://github.com/threadwaste/finto) written by Tony M. It is basically an sts service interface to resolve multiple iam roles for aws. Please read more documentation here: https://github.com/threadwaste/finto/blob/master/README.md",
+    "main": "finto.js",
+    "scripts": {
+        "test": "node test/ServerTest.js",
+        "install-fintorc": "node test/InstallFintorc.js",
+        "start": "if [ ! -z \"$FINTOJS_LOG_PATH\" ]; then node server.js >> $FINTOJS_LOG_PATH; else node server.js; fi",
+        "stop": "pkill -TERM -f node server.js",
+        "credTest": "node test/StsLibTest"
+    },
+    "dependencies": {
+        "envious": "0.2.*",
+        "aws-sdk": "2.68.*",
+        "node-getopt": "0.*",
+        "async": "2.6.*"
+    },
+    "author": "Carl Yamamoto-Furst",
+    "license": "MIT",
+    "homepage": "https://github.com/cfurst/fintojs",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cfurst/fintojs.git"
+    }
 }
