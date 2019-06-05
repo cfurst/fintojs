@@ -39,4 +39,4 @@ setTimeout(function() {
             assert(newCreds !== oldCreds);
         }
     })
-}, 3600 * 1000 + 60); // 1  minute after the hour
+}, 3600 * 1000 + 60 * 1000); // 1  minute after the hour in ms
