@@ -4,11 +4,7 @@
 
 var StsLib = require('../lib/StsLib'),
 
-    stsLib = new StsLib(),
-    assert = require('assert'),
-    AWS = require('aws-sdk'),
-    s3 = new AWS.S3();
-
+    stsLib = new StsLib();
 
 
 
@@ -22,7 +18,7 @@ console.log("an hour from now: " + newTime);
 
 
 
-/* stsLib.getCreds('xce-bamtech-test', function(err, creds) {
+stsLib.getCreds('xce-bamtech-test', function(err, creds) {
     if (err) {
         console.error(err);
     } else {
@@ -30,26 +26,9 @@ console.log("an hour from now: " + newTime);
         oldCreds = creds;
     }
 
-}); */
-s3.listBuckets({}, (err, data) => {
-    if (err) {
-        console.error(err);
-    } else {
-        console.log("first attempt with client went through...");
-    }
 });
-console.log(`setting timeout.... should execute at ${newTime}`)
-setTimeout(() => {
-    s3.listBuckets({}, (err, data) => {
-        if (err) {
-            console.error("second attempt generated an error.. possible bug with sdk detected...")
-            console.error(err);
-        } else {
-            console.log("second attempt with client went through...");
-        }
-    });
-}, 3600 * 1000 + 60 * 1000);
-/* setTimeout(function() {
+
+setTimeout(function() {
     stsLib.getCreds('xce-bamtech-test', function(err, creds) {
 
         if (err) {
@@ -60,4 +39,4 @@ setTimeout(() => {
             assert(newCreds !== oldCreds);
         }
     })
-}, 3600 * 1000 + 60 * 1000); // 1  minute after the hour */
+}, 3600 * 1000 + 60); // 1  minute after the hour
