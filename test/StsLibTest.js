@@ -3,8 +3,8 @@
  */
 
 var StsLib = require('../lib/StsLib'),
-
-    stsLib = new StsLib();
+    assert = require('assert');
+stsLib = new StsLib();
 
 
 
@@ -12,8 +12,7 @@ console.log("current time:" + Date());
 
 var anHourFromNow = new Date().getTime() + 3600 * 1000,
     newTime = new Date(anHourFromNow),
-    oldCreds,
-    newCreds;
+    oldCreds;
 console.log("an hour from now: " + newTime);
 
 
@@ -34,9 +33,10 @@ setTimeout(function() {
         if (err) {
             console.error(err);
         } else {
-            console.log("got creds after an hour: " + creds)
-            newCreds;
-            assert(newCreds !== oldCreds);
+            console.log("got creds after an hour. we are comparing:");
+            console.log(`${creds.Token} with`);
+            console.log(`${oldCreds.Token}`);
+            assert(creds.Token !== oldCreds.Token);
         }
     })
 }, 3600 * 1000 + 60 * 1000); // 1  minute after the hour in ms
