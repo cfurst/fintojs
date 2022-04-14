@@ -14,7 +14,7 @@
         "envious": "0.2.*",
         "aws-sdk": "2.68.*",
         "node-getopt": "0.*",
-        "async": "2.6.*"
+        "async": "3.2.*"
     },
     "author": "Carl Yamamoto-Furst",
     "license": "MIT",
